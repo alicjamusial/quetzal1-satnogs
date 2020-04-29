@@ -1,4 +1,5 @@
 from typing import List
+from time import sleep
 
 import zmq
 
@@ -9,6 +10,7 @@ class Uploader:
         self.socket = self.context.socket(zmq.PUB)
         self.address = f'tcp://{host}:' + str(port)
         self.socket.connect(self.address)
+        sleep(0.5)
 
     def upload(self, frames: List[bytes]):
         for frame in frames:
