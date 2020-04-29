@@ -1,5 +1,8 @@
 import sys
 from quetzal import QuetzalTelemetry, prepare_file
+from zmq_gateway import Uploader
+
+uploader = Uploader('localhost', 7021)
 
 token = None
 start = None
@@ -27,4 +30,7 @@ if len(sys.argv) >= 4:
 quetzal_telemetry = QuetzalTelemetry(token, start, end)
 quetzal_telemetry.get_and_prepare_telemetry()
 
-prepare_file(quetzal_telemetry)
+if True: 
+    uploader.upload(quetzal_telemetry.telemetry)
+else:
+    prepare_file(quetzal_telemetry)
