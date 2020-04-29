@@ -14,7 +14,7 @@ def prepare_file(quetzal_telemetry):
     file.write(telemetry_content_bytearray)
     file.close()
 
-    print("\nAll frames count: " + str(len(quetzal_telemetry.telemetry)))
+    print('\nAll frames count: ' + str(len(quetzal_telemetry.telemetry)))
 
 
 class QuetzalTelemetry:
@@ -46,11 +46,22 @@ class QuetzalTelemetry:
                 print("The token is invalid. Try again.")
                 exit()
 
-            if response.status_code == 404:
+            elif response.status_code == 200:
+                current_data = json.loads(response.text)
+
+                if type(current_data) is list:
+                    self.telemetry = self.telemetry + current_data
+                    print('Page {} loaded. {} frames fetched.'.format(page, len(current_data)))
+                else:
+                    print('There were no proper frames found. Received data: {}'.format(current_data))
+
+            elif response.status_code == 404: # no more pages
+                print('All pages loaded.')
                 break
 
-            current_data = json.loads(response.text)
-            self.telemetry = self.telemetry + current_data
+            else:
+                print('There is something wrong with the response. Status code: {}'.format(response.status_code))
+                exit()
 
             page += 1
 
