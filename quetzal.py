@@ -42,6 +42,10 @@ class QuetzalTelemetry:
             url = self.url + "&page=" + str(page) + self.filters
             response = requests.get(url, headers={'Authorization': self.token})
 
+            if response.status_code == 401:
+                print("The token is invalid. Try again.")
+                exit()
+
             if response.status_code == 404:
                 break
 
