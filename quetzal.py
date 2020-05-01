@@ -14,7 +14,7 @@ def prepare_file(quetzal_telemetry):
     file.write(telemetry_content_bytearray)
     file.close()
 
-    print('\nAll frames count: ' + str(len(quetzal_telemetry.telemetry)))
+    print('\nAll frames count: ' + str(len(quetzal_telemetry.telemetry)), flush=True)
 
 
 class QuetzalTelemetry:
@@ -25,7 +25,7 @@ class QuetzalTelemetry:
 
         self.filters = ''
 
-        self.url = "https://db.satnogs.org/api/telemetry/?satellite=99836"
+        self.url = "https://db.satnogs.org/api/telemetry/?satellite=45598"
 
         self.startFrame = "404040404040604040404040406103F0"
         self.lengthFrame = 314
@@ -43,7 +43,7 @@ class QuetzalTelemetry:
             response = requests.get(url, headers={'Authorization': self.token})
 
             if response.status_code == 401:
-                print("The token is invalid. Try again.")
+                print("The token is invalid. Try again.", flush=True)
                 exit()
 
             elif response.status_code == 200:
@@ -51,16 +51,16 @@ class QuetzalTelemetry:
 
                 if type(current_data) is list:
                     self.telemetry = self.telemetry + current_data
-                    print('Page {} loaded. {} frames fetched.'.format(page, len(current_data)))
+                    print('Page {} loaded. {} frames fetched.'.format(page, len(current_data)), flush=True)
                 else:
-                    print('There were no proper frames found. Received data: {}'.format(current_data))
+                    print('There were no proper frames found. Received data: {}'.format(current_data), flush=True)
 
             elif response.status_code == 404: # no more pages
                 print('All pages loaded.')
                 break
 
             else:
-                print('There is something wrong with the response. Status code: {}'.format(response.status_code))
+                print('There is something wrong with the response. Status code: {}'.format(response.status_code), flush=True)
                 exit()
 
             page += 1
@@ -76,3 +76,7 @@ class QuetzalTelemetry:
             filter(
                 lambda single: single['frame'].startswith(self.startFrame) and len(single['frame']) == self.lengthFrame,
                 self.telemetry))
+
+        if (len(self.telemetry) > 0):
+            print('Last valid frame timestamp: {}'.format(self.telemetry[len(self.telemetry) - 1]['timestamp']), flush=True)
+
