@@ -25,7 +25,7 @@ class QuetzalTelemetry:
 
         self.filters = ''
 
-        self.url = "https://db.satnogs.org/api/telemetry/?satellite=99836"
+        self.url = "https://db.satnogs.org/api/telemetry/?satellite=45598"
 
         self.startFrame = "404040404040604040404040406103F0"
         self.lengthFrame = 314
@@ -76,5 +76,7 @@ class QuetzalTelemetry:
             filter(
                 lambda single: single['frame'].startswith(self.startFrame) and len(single['frame']) == self.lengthFrame,
                 self.telemetry))
-        print('Last valid frame timestamp: {}'.format(self.telemetry[len(self.telemetry) - 1]['timestamp']), flush=True)
+
+        if (len(self.telemetry) > 0):
+            print('Last valid frame timestamp: {}'.format(self.telemetry[len(self.telemetry) - 1]['timestamp']), flush=True)
 
